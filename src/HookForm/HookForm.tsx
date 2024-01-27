@@ -1,20 +1,14 @@
 import { useForm, SubmitHandler } from "react-hook-form";
-import {
-  FormErrorMessage,
-  FormLabel,
-  FormControl,
-  Input,
-  Button,
-  Flex,
-  Box,
-  VStack,
-} from "@chakra-ui/react";
+import { Button, Flex, Box, VStack } from "@chakra-ui/react";
 import { sendFormData } from "../services/api";
+import { FormFieldInput } from "./components/FormFieldInput";
 
-type FormValues = {
-  username: string;
+export type FormValues = {
+  firstname: string;
+  lastname: string;
   email: string;
   password: string;
+  confirmPassword: string;
 };
 
 export const HookForm = () => {
@@ -32,51 +26,42 @@ export const HookForm = () => {
     <Flex bg="gray.100" align="center" justify="center" h="100vh">
       <Box bg="white" p={6} rounded="md">
         <form onSubmit={handleSubmit(onSubmit)}>
-          <VStack spacing={4} align="flex-start">
-            <FormControl isInvalid={Boolean(errors.username)}>
-              <FormLabel htmlFor="username">First name</FormLabel>
-              <Input
-                id="username"
-                placeholder="User name"
-                {...register("username", {
-                  required: "This is required",
-                  minLength: {
-                    value: 4,
-                    message: "Minimum length should be 4",
-                  },
-                })}
-              />
-              <FormErrorMessage>
-                {errors.username && errors.username.message}
-              </FormErrorMessage>
-            </FormControl>
-            <FormControl isInvalid={Boolean(errors.email)}>
-              <FormLabel htmlFor="email">Last name</FormLabel>
-              <Input
-                id="email"
-                placeholder="email"
-                {...register("email", {
-                  required: "This is required",
-                })}
-              />
-              <FormErrorMessage>
-                {errors.email && errors.email.message}
-              </FormErrorMessage>
-            </FormControl>
-            <FormControl isInvalid={Boolean(errors.password)}>
-              <FormLabel htmlFor="password">Last name</FormLabel>
-              <Input
-                id="password"
-                placeholder="password"
-                type="password"
-                {...register("password", {
-                  required: "This is required",
-                })}
-              />
-              <FormErrorMessage>
-                {errors.email && errors.email.message}
-              </FormErrorMessage>
-            </FormControl>
+          <VStack spacing={0} align="flex-start">
+            <FormFieldInput
+              register={{ ...register("firstname", { required: "Required" }) }}
+              label="First name"
+              placeholder="First name"
+              error={errors.firstname}
+            />
+            <FormFieldInput
+              register={{ ...register("lastname", { required: "Required" }) }}
+              label="Last name"
+              placeholder="Last name"
+              error={errors.lastname}
+            />
+            <FormFieldInput
+              register={{ ...register("email", { required: "Required" }) }}
+              type="email"
+              label="E-mail"
+              placeholder="E-mail"
+              error={errors.email}
+            />
+            <FormFieldInput
+              register={{ ...register("password", { required: "Required" }) }}
+              type="password"
+              label="Password"
+              placeholder="Password"
+              error={errors.password}
+            />
+            <FormFieldInput
+              register={{
+                ...register("confirmPassword", { required: "Required" }),
+              }}
+              type="password"
+              label="Confirm Password"
+              placeholder="Password"
+              error={errors.confirmPassword}
+            />
             <Button
               type="submit"
               mt={4}
