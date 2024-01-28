@@ -1,60 +1,38 @@
-import { HTMLInputTypeAttribute, useId } from "react";
-import {
-  FieldError,
-  InternalFieldName,
-  UseFormRegisterReturn,
-} from "react-hook-form";
-import {
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-  Input,
-} from "@chakra-ui/react";
+import { HTMLInputTypeAttribute } from "react";
+import { InternalFieldName, UseFormRegisterReturn } from "react-hook-form";
+import { Input } from "@chakra-ui/react";
 
-export type FormFieldInputProps = {
+import { FormFieldWrapper, type FormFieldWrapperPassProps } from ".";
+
+type FormFieldInputProps = FormFieldWrapperPassProps & {
   type?: HTMLInputTypeAttribute;
-  label: string;
   placeholder?: string;
-  error?: FieldError;
   register: UseFormRegisterReturn<InternalFieldName>;
 };
 
 export const FormFieldInput = ({
-  type = "text",
+  id,
   label,
-  placeholder,
   error,
+  type = "text",
+  placeholder,
   register,
 }: FormFieldInputProps) => {
-  const id = useId();
-
   return (
-    <FormControl
-      position="relative"
-      pb="5"
-      isInvalid={Boolean(error)}
-      colorScheme="purple"
-    >
-      <FormLabel htmlFor={id} color="purple.600">
-        {label}
-      </FormLabel>
-      <Input
-        focusBorderColor="purple.300"
-        errorBorderColor="pink.300"
-        id={id}
-        type={type}
-        placeholder={placeholder}
-        {...register}
-      />
-      <FormErrorMessage
-        position="absolute"
-        left="0"
-        bottom="0"
-        fontSize="xs"
-        color="pink.500"
-      >
-        {error && error.message}
-      </FormErrorMessage>
-    </FormControl>
+    <FormFieldWrapper
+      id={id}
+      label={label}
+      error={error}
+      renderControl={({ id: controlId }) => (
+        <Input
+          focusBorderColor="purple.300"
+          errorBorderColor="pink.300"
+          id={controlId}
+          type={type}
+          placeholder={placeholder}
+          {...register}
+        />
+      )}
+    />
   );
 };

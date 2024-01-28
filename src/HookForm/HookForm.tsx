@@ -1,67 +1,76 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Button, Flex, Box, VStack } from "@chakra-ui/react";
 import { sendFormData } from "../services/api";
-import { FormFieldInput } from "./components/FormFieldInput";
-
-export type FormValues = {
-  firstname: string;
-  lastname: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-};
+import { FormFieldInput, FormFieldRadio } from "./components";
+import { FormValues } from "./HookForm.types";
+import { GENDER_OPTIONS } from "./HookForm.consts";
 
 export const HookForm = () => {
   const {
+    control,
     handleSubmit,
     register,
+    reset,
     formState: { errors, isSubmitting },
-  } = useForm<FormValues>();
+  } = useForm<FormValues>({
+    mode: "onSubmit",
+  });
 
   const onSubmit: SubmitHandler<FormValues> = async (formValues) => {
     await sendFormData(formValues);
+    console.log(errors);
+    reset();
   };
 
   return (
-    <Flex bg="gray.100" align="center" justify="center" h="100vh">
-      <Box bg="white" p={6} rounded="md">
+    <Flex bg="gray.100" align="center" justify="center" minH="100vh" py={6}>
+      <Box bg="white" p={6} rounded="md" w="md">
         <form onSubmit={handleSubmit(onSubmit)}>
           <VStack spacing={0} align="flex-start">
             <FormFieldInput
-              register={{ ...register("firstname", { required: "Required" }) }}
-              label="First name"
+              register={register("firstname", { required: "Required" })}
               placeholder="First name"
+              label="First name"
               error={errors.firstname}
             />
             <FormFieldInput
-              register={{ ...register("lastname", { required: "Required" }) }}
-              label="Last name"
+              register={register("lastname", { required: "Required" })}
               placeholder="Last name"
+              label="Last name"
               error={errors.lastname}
             />
             <FormFieldInput
-              register={{ ...register("email", { required: "Required" }) }}
+              register={register("email", { required: "Required" })}
               type="email"
-              label="E-mail"
               placeholder="E-mail"
+              label="E-mail"
               error={errors.email}
             />
             <FormFieldInput
-              register={{ ...register("password", { required: "Required" }) }}
+              register={register("password", { required: "Required" })}
               type="password"
-              label="Password"
               placeholder="Password"
+              label="Password"
               error={errors.password}
             />
             <FormFieldInput
-              register={{
-                ...register("confirmPassword", { required: "Required" }),
-              }}
+              register={register("passwordConfirmation", {
+                required: "Required",
+              })}
               type="password"
-              label="Confirm Password"
               placeholder="Password"
-              error={errors.confirmPassword}
+              label="Confirm Password"
+              error={errors.passwordConfirmation}
             />
+            <FormFieldRadio
+              control={control}
+              name="gender"
+              rules={{ required: "Required" }}
+              label="Gender"
+              error={errors.gender}
+              options={GENDER_OPTIONS}
+            />
+
             <Button
               type="submit"
               mt={4}
